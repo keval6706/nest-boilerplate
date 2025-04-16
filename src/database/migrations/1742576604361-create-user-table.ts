@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
-import { User } from '../database/entities/user.entity';
-import { UserRole } from '../enums/user.enum';
+import { User } from '../entities/user.entity';
+import { UserRole } from '../../enums/user.enum';
 
 export class CreateUserTable1742576604361 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {

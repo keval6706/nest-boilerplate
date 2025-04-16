@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, Table, TableIndex } from 'typeorm';
-import { User } from '../database/entities/user.entity';
-import { Session } from '../database/entities/session.entity';
+import { Session } from '../entities/session.entity';
+import { User } from '../entities/user.entity';
 
 export class CreateSessionTable1742576609039 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
