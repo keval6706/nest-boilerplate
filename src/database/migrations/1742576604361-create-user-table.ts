@@ -51,9 +51,6 @@ export class CreateUserTable1742576604361 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     const user = queryRunner.connection.getMetadata(User);
     const table = await queryRunner.getTable(user.tableName);
-
-    if (table) {
-      await queryRunner.dropTable(table);
-    }
+    if (table) await queryRunner.dropTable(table);
   }
 }

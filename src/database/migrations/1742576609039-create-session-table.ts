@@ -43,25 +43,14 @@ export class CreateSessionTable1742576609039 implements MigrationInterface {
     );
 
     await queryRunner.createIndices(session.tableName, [
-      new TableIndex({
-        name: 'a273315d-e564-4ed3-9d86-b7c0dafa1d0a',
-        columnNames: ['userId'],
-      }),
+      new TableIndex({ columnNames: ['userId', 'id'] }),
     ]);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     const session = queryRunner.connection.getMetadata(Session);
     const table = await queryRunner.getTable(session.tableName);
-    if (table) {
-      for (const foreignKey of table.foreignKeys) {
-        await queryRunner.dropForeignKey(table, foreignKey);
-      }
-
-      for (const index of table.indices) {
-        await queryRunner.dropIndex(table, index);
-      }
-      await queryRunner.dropTable(table);
-    }
+    if (!table) return;
+    await queryRunner.dropTable(table);
   }
 }
