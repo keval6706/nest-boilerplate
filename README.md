@@ -117,3 +117,10 @@ npm run migration:create [MIGRATION NAME]
 ```bash
 nest g res modules/[Module Name]
 ```
+
+## Create Admin User
+```
+npm run build
+
+node dist/commands create-admin-user -fn 'FirstName' -ln 'LastName' -e 'Email' -p 'Password' -u 'Username'
+```
