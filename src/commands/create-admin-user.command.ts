@@ -17,16 +17,16 @@ export class CreateAdminUserCommand extends CommandRunner {
     super();
   }
 
-  async run(inputs: string[], options: Record<string, string>): Promise<void> {
+  async run(inputs: string[], payload: Record<string, string>): Promise<void> {
     const user = await this.dataSource.getRepository(User).findOneBy({
-      email: options.email,
+      email: payload.email,
     });
 
     if (user) throw new BadRequestException('Already signed up.');
 
     const u = this.dataSource.getRepository(User).create({
-      ...options,
-      password: await bcrypt.hash(options.password, 10),
+      ...payload,
+      password: await bcrypt.hash(payload.password, 10),
       role: UserRole.ADMIN,
     });
 
