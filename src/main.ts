@@ -2,7 +2,7 @@ import compression from '@fastify/compress';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import { VersioningType } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { AppConfig } from './config/app.config';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
@@ -19,7 +19,7 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
 
-  const port = +app.get(ConfigService).get('PORT') || 8080;
+  const port = +app.get(AppConfig).port;
 
   // Add Versioning
   app.enableVersioning({

@@ -1,21 +1,16 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { join } from 'path';
 import { GlobalModule } from './modules/global/global.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProductModule } from './modules/product/product.module';
 import { RouterModule } from '@nestjs/core';
+import { ConfigifyModule } from '@itgorillaz/configify';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: [join(process.cwd(), '.env')],
-      isGlobal: true,
-      cache: true,
-    }),
+    ConfigifyModule.forRootAsync(),
     DatabaseModule,
     AuthModule,
     ProductModule,
