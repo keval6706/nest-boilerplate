@@ -1,15 +1,18 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, Logger } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { Command, CommandRunner, Option } from 'nest-commander';
 import { DataSource } from 'typeorm';
 import { User } from '../database/entities/user.entity';
 import { UserRole } from '../enums/user.enum';
+import bcrypt from 'bcrypt';
 
 @Command({
   name: 'create-admin-user',
   description: 'Create admin user',
 })
 export class CreateAdminUserCommand extends CommandRunner {
+  private readonly logger = new Logger(CreateAdminUserCommand.name);
+
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {
     super();
   }
@@ -23,12 +26,12 @@ export class CreateAdminUserCommand extends CommandRunner {
 
     const u = this.dataSource.getRepository(User).create({
       ...options,
+      password: await bcrypt.hash(options.password, 10),
       role: UserRole.ADMIN,
     });
 
     const _user = await this.dataSource.getRepository(User).save(u);
-
-    console.log(
+    this.logger.warn(
       await this.dataSource.getRepository(User).findOneBy({ id: _user.id }),
     );
   }
