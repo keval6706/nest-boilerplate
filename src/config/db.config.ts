@@ -6,25 +6,25 @@ export class DbConfig {
   @Value('DB_HOST')
   @IsNotEmpty()
   @IsString()
-  dbHost: string;
+  host: string;
 
   @Value('DB_PORT', { parse: parseInt })
   @IsNotEmpty()
   @IsNumber()
-  dbPort: number;
+  port: number;
 
   @Value('DB_USERNAME')
   @IsNotEmpty()
   @IsString()
-  dbUsername: string;
+  username: string;
 
   @Value('DB_PASSWORD')
   @IsNotEmpty()
   @IsString()
-  dbPassword: string;
+  password: string;
 
   @Value('DB_DATABASE')
   @IsNotEmpty()
   @IsString()
-  dbDatabase: string;
+  database: string;
 }

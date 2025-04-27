@@ -9,13 +9,13 @@ import path from 'path';
   imports: [
     TypeOrmModule.forRootAsync({
       inject: [DbConfig],
-      useFactory: (dbConfig: DbConfig) => ({
+      useFactory: (config: DbConfig) => ({
         type: 'postgres',
-        host: dbConfig.dbHost,
-        port: dbConfig.dbPort,
-        username: dbConfig.dbUsername,
-        password: dbConfig.dbPassword,
-        database: dbConfig.dbDatabase,
+        host: config.host,
+        port: config.port,
+        username: config.username,
+        password: config.password,
+        database: config.database,
         entities: [path.join(__dirname, 'entities/*.entity{.ts,.js}')],
         synchronize: false,
         logging: false,
