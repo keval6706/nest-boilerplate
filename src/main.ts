@@ -12,6 +12,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './exceptions/http.exception';
 import { ApiResponseInterceptor } from './interceptors/api-response.interceptor';
+import { apiReference } from '@scalar/nestjs-api-reference';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -54,6 +55,11 @@ async function bootstrap() {
   const documentFactory = SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup('api', app, documentFactory);
+
+  app.use(
+    '/api/reference',
+    apiReference({ withFastify: true, spec: { content: documentFactory } }),
+  );
 
   // Added for prevent crash server.
   process.on('unhandledRejection', (error) => {
