@@ -1,13 +1,13 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { InjectDataSource } from '@nestjs/typeorm';
-import bcrypt, { compareSync } from 'bcrypt';
-import { DataSource } from 'typeorm';
-import { Session } from '../../database/entities/session.entity';
-import { User } from '../../database/entities/user.entity';
-import { AuthUser } from '../../services/auth-user.service';
-import { OAuthPayload } from '../../types/jwt';
-import { LoginDto, SignupDto } from './auth.dto';
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { InjectDataSource } from "@nestjs/typeorm";
+import bcrypt, { compareSync } from "bcrypt";
+import { DataSource } from "typeorm";
+import { Session } from "../../database/entities/session.entity";
+import { User } from "../../database/entities/user.entity";
+import { AuthUser } from "../../services/auth-user.service";
+import { OAuthPayload } from "../../types/jwt";
+import { LoginDto, SignupDto } from "./auth.dto";
 
 @Injectable()
 export class AuthService {
@@ -24,7 +24,7 @@ export class AuthService {
 
     if (u)
       throw new BadRequestException(
-        'Already signed up. Please login to continue',
+        "Already signed up. Please login to continue",
       );
 
     const user = this.dataSource.getRepository(User).create({
@@ -50,11 +50,11 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new BadRequestException('User not found');
+      throw new BadRequestException("User not found");
     }
 
     if (!compareSync(password, user.password))
-      throw new BadRequestException('Incorrect password.');
+      throw new BadRequestException("Incorrect password.");
 
     const session = await this.dataSource
       .getRepository(Session)

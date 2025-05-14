@@ -1,8 +1,8 @@
-import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { Module } from "@nestjs/common";
+import { JwtModule } from "@nestjs/jwt";
+import { PassportModule } from "@nestjs/passport";
+import { readFileSync } from "fs";
+import { join } from "path";
 
 @Module({
   imports: [
@@ -12,11 +12,11 @@ import { join } from 'path';
       useFactory: () => ({
         global: true,
         signOptions: {
-          algorithm: 'ES256',
+          algorithm: "ES256",
           // expiresIn: '1d',
         },
-        privateKey: readFileSync(join(process.cwd(), 'jwt.key')),
-        publicKey: readFileSync(join(process.cwd(), 'jwt.key.pub')),
+        privateKey: readFileSync(join(process.cwd(), "jwt.key")),
+        publicKey: readFileSync(join(process.cwd(), "jwt.key.pub")),
         // verifyOptions: {
         //   ignoreExpiration: false,
         // },

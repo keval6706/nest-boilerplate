@@ -1,7 +1,7 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { FastifyRequest } from 'fastify';
-import { UserRole } from '../enums/user.enum';
+import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { FastifyRequest } from "fastify";
+import { UserRole } from "../enums/user.enum";
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
@@ -12,7 +12,7 @@ export class RolesGuard implements CanActivate {
 
     if (user) {
       const roles = this.reflector.get<UserRole[]>(
-        'roles',
+        "roles",
         context.getHandler(),
       );
       if (!roles || roles.length === 0) return true;
@@ -20,7 +20,7 @@ export class RolesGuard implements CanActivate {
     }
 
     const allowed = this.reflector.get<boolean>(
-      'allowed',
+      "allowed",
       context.getHandler(),
     );
     if (allowed) return allowed;

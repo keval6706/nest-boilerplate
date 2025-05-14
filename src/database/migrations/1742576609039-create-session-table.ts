@@ -1,6 +1,6 @@
-import { MigrationInterface, QueryRunner, Table, TableIndex } from 'typeorm';
-import { Session } from '../entities/session.entity';
-import { User } from '../entities/user.entity';
+import { MigrationInterface, QueryRunner, Table, TableIndex } from "typeorm";
+import { Session } from "../entities/session.entity";
+import { User } from "../entities/user.entity";
 
 export class CreateSessionTable1742576609039 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -12,38 +12,38 @@ export class CreateSessionTable1742576609039 implements MigrationInterface {
         name: session.tableName,
         columns: [
           {
-            name: 'id',
-            type: 'uuid',
+            name: "id",
+            type: "uuid",
             isPrimary: true,
-            generationStrategy: 'uuid',
-            default: 'uuid_generate_v1()',
+            generationStrategy: "uuid",
+            default: "uuid_generate_v1()",
           },
-          { name: 'userId', type: 'uuid' },
-          { name: 'ipAddress', type: 'inet', isNullable: true },
+          { name: "userId", type: "uuid" },
+          { name: "ipAddress", type: "inet", isNullable: true },
           {
-            name: 'createdAt',
-            type: 'timestamp with time zone',
-            default: 'now()',
+            name: "createdAt",
+            type: "timestamp with time zone",
+            default: "now()",
           },
           {
-            name: 'updatedAt',
-            type: 'timestamp with time zone',
-            default: 'now()',
+            name: "updatedAt",
+            type: "timestamp with time zone",
+            default: "now()",
           },
         ],
         foreignKeys: [
           {
-            columnNames: ['userId'],
-            referencedColumnNames: ['id'],
+            columnNames: ["userId"],
+            referencedColumnNames: ["id"],
             referencedTableName: user.tableName,
-            onDelete: 'CASCADE',
+            onDelete: "CASCADE",
           },
         ],
       }),
     );
 
     await queryRunner.createIndices(session.tableName, [
-      new TableIndex({ columnNames: ['userId', 'id'] }),
+      new TableIndex({ columnNames: ["userId", "id"] }),
     ]);
   }
 

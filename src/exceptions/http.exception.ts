@@ -4,16 +4,16 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
-} from '@nestjs/common';
-import { HttpAdapterHost } from '@nestjs/core';
-import { FastifyRequest } from 'fastify';
+} from "@nestjs/common";
+import { HttpAdapterHost } from "@nestjs/core";
+import { FastifyRequest } from "fastify";
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
   catch(exception: unknown, host: ArgumentsHost) {
-    console.log('EXCEPTION', exception);
+    console.log("EXCEPTION", exception);
 
     const ctx = host.switchToHttp();
     const request = ctx.getRequest<FastifyRequest>();
@@ -26,14 +26,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
         : HttpStatus.INTERNAL_SERVER_ERROR;
     const data: any =
       exception instanceof HttpException
-        ? typeof exception.getResponse() === 'string'
+        ? typeof exception.getResponse() === "string"
           ? { message: exception.getResponse() }
           : {
               message: (exception.getResponse() as any).message,
               errors: (exception.getResponse() as any).errors,
             }
         : {
-            message: 'Sorry, something went wrong there. Try again.',
+            message: "Sorry, something went wrong there. Try again.",
           };
 
     const responseBody = {

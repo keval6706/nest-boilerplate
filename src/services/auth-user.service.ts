@@ -1,6 +1,6 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
-import { FastifyRequest } from 'fastify';
+import { Inject, Injectable } from "@nestjs/common";
+import { REQUEST } from "@nestjs/core";
+import { FastifyRequest } from "fastify";
 
 @Injectable()
 export class AuthUser {

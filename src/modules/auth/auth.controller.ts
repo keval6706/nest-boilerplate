@@ -6,46 +6,46 @@ import {
   Post,
   UsePipes,
   ValidationPipe,
-} from '@nestjs/common';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
-import { Auth } from '../../decorators/auth.decorator';
-import { LoginDto, SignupDto } from './auth.dto';
-import { AuthService } from './auth.service';
-import { UserRole } from '../../enums/user.enum';
+} from "@nestjs/common";
+import { ApiBody, ApiTags } from "@nestjs/swagger";
+import { Auth } from "../../decorators/auth.decorator";
+import { UserRole } from "../../enums/user.enum";
+import { LoginDto, SignupDto } from "./auth.dto";
+import { AuthService } from "./auth.service";
 
 @Controller()
 @UsePipes(new ValidationPipe({ whitelist: true }))
-@ApiTags('Auth')
+@ApiTags("Auth")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('signup')
+  @Post("signup")
   @HttpCode(HttpStatus.OK)
   async signup(@Body() body: SignupDto) {
     return {
       data: await this.authService.signup(body),
-      message: 'Signup successfull',
+      message: "Signup successfull",
     };
   }
 
-  @Post('login')
+  @Post("login")
   @ApiBody({ type: LoginDto })
   @HttpCode(HttpStatus.OK)
   async login(@Body() body: LoginDto) {
     return {
       data: await this.authService.login(body),
-      message: 'Login successfull',
+      message: "Login successfull",
     };
   }
 
-  @Post('logout')
+  @Post("logout")
   @HttpCode(HttpStatus.OK)
   // @Auth()
   @Auth([UserRole.USER, UserRole.ADMIN])
   async logout() {
     return {
       data: await this.authService.logout(),
-      message: 'Logout successfull',
+      message: "Logout successfull",
     };
   }
 }
