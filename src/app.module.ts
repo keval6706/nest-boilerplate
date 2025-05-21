@@ -14,13 +14,13 @@ import { ProductModule } from "./modules/product/product.module";
     DatabaseModule,
     AuthModule,
     ProductModule,
-
+    GlobalModule,
     RouterModule.register([
       { path: "auth", module: AuthModule },
       { path: "product", module: ProductModule },
     ]),
   ],
   controllers: [AppController],
-  providers: [AppService, GlobalModule],
+  providers: [AppService],
 })
 export class AppModule {}

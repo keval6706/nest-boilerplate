@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectDataSource } from "@nestjs/typeorm";
-import bcrypt, { compareSync } from "bcrypt";
 import { DataSource } from "typeorm";
 import { Session } from "../../database/entities/session.entity";
 import { User } from "../../database/entities/user.entity";
 import { AuthUser } from "../../services/auth-user.service";
+import { BcryptService } from "../../services/bcrypt.service";
 import { OAuthPayload } from "../../types/jwt";
 import { LoginDto, SignupDto } from "./auth.dto";
 
@@ -15,6 +15,7 @@ export class AuthService {
     @InjectDataSource() private readonly dataSource: DataSource,
     private readonly jwtService: JwtService,
     private readonly authUser: AuthUser,
+    private readonly bcryptService: BcryptService,
   ) {}
 
   async signup(body: SignupDto) {
@@ -29,7 +30,7 @@ export class AuthService {
 
     const user = this.dataSource.getRepository(User).create({
       ...body,
-      password: await bcrypt.hash(body.password, 10),
+      password: this.bcryptService.hashSync(body.password),
     });
 
     return await this.dataSource.getRepository(User).save(user);
@@ -53,8 +54,7 @@ export class AuthService {
       throw new BadRequestException("User not found");
     }
 
-    if (!compareSync(password, user.password))
-      throw new BadRequestException("Incorrect password.");
+    this.bcryptService.compareSync(password, user.password);
 
     const session = await this.dataSource
       .getRepository(Session)
