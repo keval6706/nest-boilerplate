@@ -5,13 +5,13 @@ import {
   HttpStatus,
   Post,
   UsePipes,
-  ValidationPipe,
 } from "@nestjs/common";
 import { ApiBody, ApiTags } from "@nestjs/swagger";
 import { User } from "../../database/entities/user.entity";
 import { Auth } from "../../decorators/auth.decorator";
 import { AuthSession, AuthUser } from "../../decorators/user.decorator";
 import { UserRole } from "../../enums/user.enum";
+import { ValidationPipe } from "../../pipes/validation.pipe";
 import { LoginDto, SignupDto } from "./auth.dto";
 import { AuthService } from "./auth.service";
 
