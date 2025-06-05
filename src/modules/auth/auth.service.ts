@@ -4,7 +4,6 @@ import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 import { Session } from "../../database/entities/session.entity";
 import { User } from "../../database/entities/user.entity";
-import { AuthUser } from "../../services/auth-user.service";
 import { BcryptService } from "../../services/bcrypt.service";
 import { OAuthPayload } from "../../types/jwt";
 import { LoginDto, SignupDto } from "./auth.dto";
@@ -14,7 +13,6 @@ export class AuthService {
   constructor(
     @InjectDataSource() private readonly dataSource: DataSource,
     private readonly jwtService: JwtService,
-    private readonly authUser: AuthUser,
     private readonly bcryptService: BcryptService,
   ) {}
 
@@ -72,9 +70,7 @@ export class AuthService {
     return { ..._user, token: await this.jwtService.signAsync(payload) };
   }
 
-  async logout() {
-    const session = this.authUser.session;
-    const user = this.authUser.user;
+  async logout(user: User, session: string) {
     await this.dataSource
       .getRepository(Session)
       .delete({ id: session, userId: user.id });

@@ -8,7 +8,9 @@ import {
   ValidationPipe,
 } from "@nestjs/common";
 import { ApiBody, ApiTags } from "@nestjs/swagger";
+import { User } from "../../database/entities/user.entity";
 import { Auth } from "../../decorators/auth.decorator";
+import { AuthUser, Session } from "../../decorators/user.decorator";
 import { UserRole } from "../../enums/user.enum";
 import { LoginDto, SignupDto } from "./auth.dto";
 import { AuthService } from "./auth.service";
@@ -42,9 +44,9 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   // @Auth()
   @Auth([UserRole.USER, UserRole.ADMIN])
-  async logout() {
+  async logout(@AuthUser() user: User, @Session() session: string) {
     return {
-      data: await this.authService.logout(),
+      data: await this.authService.logout(user, session),
       message: "Logout successfull",
     };
   }
