@@ -14,7 +14,7 @@ export const AuthUser = createParamDecorator(
   },
 );
 
-export const Session = createParamDecorator(
+export const AuthSession = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<FastifyRequest>();
     const session = request.session;
