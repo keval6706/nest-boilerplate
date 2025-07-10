@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { PassportStrategy } from "@nestjs/passport";
-import { FastifyRequest } from "fastify";
+import { Request } from "express";
 import { readFileSync } from "fs";
 import { Model } from "mongoose";
 import { ExtractJwt, Strategy } from "passport-jwt";
@@ -28,7 +28,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(request: FastifyRequest, payload: OAuthPayload) {
+  async validate(request: Request, payload: OAuthPayload) {
     const session = await this.sessionModel
       .findById(payload.sessionId)
       .populate("userId")

@@ -1,6 +1,5 @@
 import { VersioningType } from "@nestjs/common";
-import { HttpAdapterHost, NestFactory } from "@nestjs/core";
-import { NestFastifyApplication } from "@nestjs/platform-fastify";
+import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { apiReference } from "@scalar/nestjs-api-reference";
 import { AppModule } from "./app.module";
@@ -9,7 +8,7 @@ import { HttpExceptionFilter } from "./exceptions/http.exception";
 import { ApiResponseInterceptor } from "./interceptors/api-response.interceptor";
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule);
+  const app = await NestFactory.create(AppModule);
 
   const port = +app.get(AppConfig).port;
 
@@ -24,7 +23,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ApiResponseInterceptor());
 
   // Error Handler
-  app.useGlobalFilters(new HttpExceptionFilter(app.get(HttpAdapterHost)));
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   // Swagger
   const config = new DocumentBuilder()
@@ -48,7 +47,7 @@ async function bootstrap() {
     console.log("UNHANDLED REJECTION...", error);
   });
 
-  await app.listen({ port, host: "0.0.0.0" }, () => {
+  await app.listen(port, () => {
     console.log(`################################################
   🛡️  Server listening on port: http://0.0.0.0:${port} 🛡️
 ################################################`);

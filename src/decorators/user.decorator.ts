@@ -1,9 +1,9 @@
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
-import { FastifyRequest } from "fastify";
+import { Request } from "express";
 
 export const AuthUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest<FastifyRequest>();
+    const request = ctx.switchToHttp().getRequest<Request>();
     const user = request.user;
 
     if (!user) {
@@ -16,7 +16,7 @@ export const AuthUser = createParamDecorator(
 
 export const AuthSession = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest<FastifyRequest>();
+    const request = ctx.switchToHttp().getRequest<Request>();
     const session = request.session;
 
     if (!session) {
