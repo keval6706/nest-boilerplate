@@ -38,7 +38,9 @@ export class AuthService {
       password: this.bcryptService.hashSync(body.password),
     });
 
-    return await user.save();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...rest } = (await user.save()).toJSON();
+    return rest;
   }
 
   async login(loginDto: LoginDto) {
