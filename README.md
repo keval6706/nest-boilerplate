@@ -117,3 +117,16 @@ npm run build
 
 node dist/commands create-admin-user -fn 'FirstName' -ln 'LastName' -e 'Email' -p 'Password' -u 'Username'
 ```
+
+### Production Deployment
+
+```bash
+# Build and start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f app
+
+# Stop services
+docker-compose down
+```
