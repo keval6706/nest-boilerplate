@@ -28,10 +28,13 @@ export class NotificationController {
     @AuthUser() user: User,
     @Query() query: GetNotificationsDto,
   ) {
-    return this.notificationService.getUserNotifications(
-      user._id.toString(),
-      query,
-    );
+    return {
+      data: await this.notificationService.getUserNotifications(
+        user._id.toString(),
+        query,
+      ),
+      message: "Notifications fetched successfully",
+    };
   }
 
   @Get("unread-count")
@@ -39,7 +42,7 @@ export class NotificationController {
     const count = await this.notificationService.getUnreadCount(
       user._id.toString(),
     );
-    return { count };
+    return { data: count, message: "Unread count fetched successfully" };
   }
 
   @Patch(":id/read")
@@ -47,15 +50,21 @@ export class NotificationController {
     @Param("id") notificationId: string,
     @AuthUser() user: User,
   ) {
-    return this.notificationService.markAsRead(
-      notificationId,
-      user._id.toString(),
-    );
+    return {
+      data: await this.notificationService.markAsRead(
+        notificationId,
+        user._id.toString(),
+      ),
+      message: "Notification marked as read successfully",
+    };
   }
 
   @Patch("mark-all-read")
   async markAllAsRead(@AuthUser() user: User) {
-    return this.notificationService.markAllAsRead(user._id.toString());
+    return {
+      data: await this.notificationService.markAllAsRead(user._id.toString()),
+      message: "All notifications marked as read successfully",
+    };
   }
 
   @Delete(":id")

@@ -13,13 +13,13 @@ import { join } from "path";
         global: true,
         signOptions: {
           algorithm: "ES256",
-          // expiresIn: '1d',
+          expiresIn: "15m", // Access token expires in 15 minutes
         },
         privateKey: readFileSync(join(process.cwd(), "jwt.key")),
         publicKey: readFileSync(join(process.cwd(), "jwt.key.pub")),
-        // verifyOptions: {
-        //   ignoreExpiration: false,
-        // },
+        verifyOptions: {
+          ignoreExpiration: false,
+        },
       }),
     }),
   ],

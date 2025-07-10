@@ -105,13 +105,6 @@ openssl ecparam -genkey -name prime256v1 -noout -out jwt.key
 openssl ec -in jwt.key -pubout -out jwt.key.pub
 ```
 
-## Migration
-```bash
-npm run migration:run:local
-npm run migration:run
-
-npm run migration:create [MIGRATION NAME]
-```
 
 ## Generate Module
 ```bash

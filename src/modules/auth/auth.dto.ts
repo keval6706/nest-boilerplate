@@ -38,3 +38,10 @@ export class LoginDto {
   @IsString()
   ipAddress: string;
 }
+
+export class RefreshTokenDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  refreshToken: string;
+}

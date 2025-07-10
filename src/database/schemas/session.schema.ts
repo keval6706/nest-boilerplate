@@ -15,6 +15,12 @@ export class Session {
 
   @Prop({ type: String, required: false })
   ipAddress: string;
+
+  @Prop({ type: String, required: true })
+  refreshToken: string;
+
+  @Prop({ type: Date, required: true })
+  refreshTokenExpiresAt: Date;
 }
 
 export const SessionSchema = SchemaFactory.createForClass(Session);

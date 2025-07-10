@@ -12,7 +12,7 @@ import { Auth } from "../../decorators/auth.decorator";
 import { AuthSession, AuthUser } from "../../decorators/user.decorator";
 import { UserRole } from "../../enums/user.enum";
 import { ValidationPipe } from "../../pipes/validation.pipe";
-import { LoginDto, SignupDto } from "./auth.dto";
+import { LoginDto, RefreshTokenDto, SignupDto } from "./auth.dto";
 import { AuthService } from "./auth.service";
 
 @Controller()
@@ -48,6 +48,16 @@ export class AuthController {
     return {
       data: await this.authService.logout(user, session),
       message: "Logout successfull",
+    };
+  }
+
+  @Post("refresh")
+  @ApiBody({ type: RefreshTokenDto })
+  @HttpCode(HttpStatus.OK)
+  async refreshToken(@Body() body: RefreshTokenDto) {
+    return {
+      data: await this.authService.refreshToken(body),
+      message: "Token refreshed successfully",
     };
   }
 }

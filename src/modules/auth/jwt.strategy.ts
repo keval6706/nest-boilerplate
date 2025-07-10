@@ -31,7 +31,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(request: Request, payload: OAuthPayload) {
     const session = await this.sessionModel
       .findById(payload.sessionId)
-      .populate("userId")
+      .populate("user")
       .exec();
 
     if (!session) throw new UnauthorizedException();
