@@ -4,6 +4,7 @@ import { Model, Types } from "mongoose";
 import { Follow, FollowDocument } from "../../database/schemas/follow.schema";
 import { Post, PostDocument } from "../../database/schemas/post.schema";
 import { User, UserDocument } from "../../database/schemas/user.schema";
+import { NotificationService } from "../notification/notification.service";
 import {
   GetFeedQueryDto,
   GetFollowersQueryDto,
@@ -16,6 +17,7 @@ export class FollowService {
     @InjectModel(Follow.name) private followModel: Model<FollowDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(Post.name) private postModel: Model<PostDocument>,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async followUser(followerId: string, followingId: string) {
@@ -46,6 +48,12 @@ export class FollowService {
           $inc: { followersCount: 1 },
         }),
       ]);
+
+      // Create notification for follow
+      await this.notificationService.createFollowNotification(
+        followerId,
+        followingId,
+      );
 
       return { message: "User followed successfully" };
     } catch (error) {

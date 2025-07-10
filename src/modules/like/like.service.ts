@@ -11,6 +11,7 @@ import {
   LikeableType,
 } from "../../database/schemas/like.schema";
 import { Post, PostDocument } from "../../database/schemas/post.schema";
+import { NotificationService } from "../notification/notification.service";
 
 @Injectable()
 export class LikeService {
@@ -18,10 +19,11 @@ export class LikeService {
     @InjectModel(Like.name) private likeModel: Model<LikeDocument>,
     @InjectModel(Post.name) private postModel: Model<PostDocument>,
     @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async likePost(postId: string, userId: string) {
-    const post = await this.postModel.findById(postId);
+    const post = await this.postModel.findById(postId).populate("author");
     if (!post) {
       throw new NotFoundException("Post not found");
     }
@@ -38,6 +40,14 @@ export class LikeService {
       await this.postModel.findByIdAndUpdate(postId, {
         $inc: { likesCount: 1 },
       });
+
+      // Create notification for post like
+      await this.notificationService.createLikeNotification(
+        userId,
+        (post.author as any)._id.toString(),
+        postId,
+        "post",
+      );
 
       return { message: "Post liked successfully" };
     } catch (error) {
@@ -67,7 +77,9 @@ export class LikeService {
   }
 
   async likeComment(commentId: string, userId: string) {
-    const comment = await this.commentModel.findById(commentId);
+    const comment = await this.commentModel
+      .findById(commentId)
+      .populate("author");
     if (!comment) {
       throw new NotFoundException("Comment not found");
     }
@@ -84,6 +96,14 @@ export class LikeService {
       await this.commentModel.findByIdAndUpdate(commentId, {
         $inc: { likesCount: 1 },
       });
+
+      // Create notification for comment like
+      await this.notificationService.createLikeNotification(
+        userId,
+        (comment.author as any)._id.toString(),
+        commentId,
+        "comment",
+      );
 
       return { message: "Comment liked successfully" };
     } catch (error) {

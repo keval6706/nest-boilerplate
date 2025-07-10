@@ -6,6 +6,7 @@ import {
   CommentDocument,
 } from "../../database/schemas/comment.schema";
 import { Post, PostDocument } from "../../database/schemas/post.schema";
+import { NotificationService } from "../notification/notification.service";
 import { CreateCommentDto, UpdateCommentDto } from "./comment.dto";
 
 @Injectable()
@@ -13,6 +14,7 @@ export class CommentService {
   constructor(
     @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,
     @InjectModel(Post.name) private postModel: Model<PostDocument>,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async create(createCommentDto: CreateCommentDto, userId: string) {
@@ -36,6 +38,9 @@ export class CommentService {
     await this.postModel.findByIdAndUpdate(postId, {
       $inc: { commentsCount: 1 },
     });
+
+    // Create notification for comment
+    await this.notificationService.createCommentNotification(userId, postId);
 
     return savedComment.populate("author", "firstName lastName email");
   }
