@@ -26,6 +26,12 @@ export class User {
   @Prop({ type: String, enum: UserRole, default: UserRole.USER })
   role: UserRole;
 
+  @Prop({ type: Number, default: 0 })
+  followersCount: number;
+
+  @Prop({ type: Number, default: 0 })
+  followingCount: number;
+
   @Prop({ type: Date, default: null })
   deletedAt: Date;
 }

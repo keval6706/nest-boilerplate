@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
+import { Model, RootFilterQuery, Types } from "mongoose";
 import { Post, PostDocument } from "../../database/schemas/post.schema";
 import { User } from "../../database/schemas/user.schema";
 import { UserRole } from "../../enums/user.enum";
@@ -28,7 +28,7 @@ export class PostService {
     const { search, page = 1, limit = 10 } = query;
     const skip = (page - 1) * limit;
 
-    const filter: any = { deletedAt: null, isActive: true };
+    const filter: RootFilterQuery<Post> = { deletedAt: null };
 
     if (search) {
       filter.$or = [
@@ -62,7 +62,7 @@ export class PostService {
     }
 
     const post = await this.postModel
-      .findOne({ _id: id, deletedAt: null, isActive: true })
+      .findOne({ _id: id, deletedAt: null })
       .populate("author", "firstName lastName email")
       .exec();
 

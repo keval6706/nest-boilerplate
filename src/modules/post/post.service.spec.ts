@@ -14,7 +14,6 @@ describe("PostService", () => {
     content: "Test Content",
     author: "507f1f77bcf86cd799439012",
     tags: ["test"],
-    isActive: true,
     deletedAt: null,
     createdAt: new Date(),
     updatedAt: new Date(),

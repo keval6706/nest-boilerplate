@@ -23,7 +23,7 @@ import { ValidationPipe } from "../../pipes/validation.pipe";
 import { LikeCommentDto, LikePostDto } from "./like.dto";
 import { LikeService } from "./like.service";
 
-@Controller("likes")
+@Controller()
 @UsePipes(new ValidationPipe({ whitelist: true }))
 @ApiTags("Likes")
 export class LikeController {

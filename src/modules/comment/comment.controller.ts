@@ -25,7 +25,7 @@ import { ValidationPipe } from "../../pipes/validation.pipe";
 import { CreateCommentDto, UpdateCommentDto } from "./comment.dto";
 import { CommentService } from "./comment.service";
 
-@Controller("comments")
+@Controller()
 @UsePipes(new ValidationPipe({ whitelist: true }))
 @ApiTags("Comments")
 export class CommentController {

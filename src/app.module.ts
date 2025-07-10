@@ -6,6 +6,7 @@ import { AppService } from "./app.service";
 import { DatabaseModule } from "./database/database.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { CommentModule } from "./modules/comment/comment.module";
+import { FollowModule } from "./modules/follow/follow.module";
 import { GlobalModule } from "./modules/global/global.module";
 import { LikeModule } from "./modules/like/like.module";
 import { PostModule } from "./modules/post/post.module";
@@ -21,10 +22,12 @@ import { PostModule } from "./modules/post/post.module";
       { path: "post", module: PostModule },
       { path: "comment", module: CommentModule },
       { path: "like", module: LikeModule },
+      { path: "follow", module: FollowModule },
     ]),
     PostModule,
     CommentModule,
     LikeModule,
+    FollowModule,
   ],
   controllers: [AppController],
   providers: [AppService],
