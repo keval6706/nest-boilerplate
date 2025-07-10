@@ -1,8 +1,8 @@
 import { BadRequestException, Logger } from "@nestjs/common";
-import { InjectDataSource } from "@nestjs/typeorm";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
 import { Command, CommandRunner, Option } from "nest-commander";
-import { DataSource } from "typeorm";
-import { User } from "../database/entities/user.entity";
+import { User, UserDocument } from "../database/schemas/user.schema";
 import { UserRole } from "../enums/user.enum";
 import { BcryptService } from "../services/bcrypt.service";
 
@@ -14,29 +14,27 @@ export class CreateAdminUserCommand extends CommandRunner {
   private readonly logger = new Logger(CreateAdminUserCommand.name);
 
   constructor(
-    @InjectDataSource() private readonly dataSource: DataSource,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly bcryptService: BcryptService,
   ) {
     super();
   }
 
   async run(inputs: string[], payload: Record<string, string>): Promise<void> {
-    const user = await this.dataSource.getRepository(User).findOneBy({
+    const user = await this.userModel.findOne({
       email: payload.email,
     });
 
     if (user) throw new BadRequestException("Already signed up.");
 
-    const u = this.dataSource.getRepository(User).create({
+    const newUser = new this.userModel({
       ...payload,
       password: this.bcryptService.hashSync(payload.password),
       role: UserRole.ADMIN,
     });
 
-    const _user = await this.dataSource.getRepository(User).save(u);
-    this.logger.warn(
-      await this.dataSource.getRepository(User).findOneBy({ id: _user.id }),
-    );
+    const savedUser = await newUser.save();
+    this.logger.warn(await this.userModel.findById(savedUser._id));
   }
 
   @Option({

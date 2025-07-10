@@ -7,7 +7,7 @@ import {
   UsePipes,
 } from "@nestjs/common";
 import { ApiBody, ApiTags } from "@nestjs/swagger";
-import { User } from "../../database/entities/user.entity";
+import { User } from "../../database/schemas/user.schema";
 import { Auth } from "../../decorators/auth.decorator";
 import { AuthSession, AuthUser } from "../../decorators/user.decorator";
 import { UserRole } from "../../enums/user.enum";

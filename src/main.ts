@@ -1,12 +1,6 @@
-import compression from "@fastify/compress";
-import cors from "@fastify/cors";
-import helmet from "@fastify/helmet";
 import { VersioningType } from "@nestjs/common";
 import { HttpAdapterHost, NestFactory } from "@nestjs/core";
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from "@nestjs/platform-fastify";
+import { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { apiReference } from "@scalar/nestjs-api-reference";
 import { AppModule } from "./app.module";
@@ -15,10 +9,7 @@ import { HttpExceptionFilter } from "./exceptions/http.exception";
 import { ApiResponseInterceptor } from "./interceptors/api-response.interceptor";
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
-    new FastifyAdapter(),
-  );
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule);
 
   const port = +app.get(AppConfig).port;
 
@@ -28,15 +19,6 @@ async function bootstrap() {
     prefix: "api/v",
     type: VersioningType.URI,
   });
-
-  // Add Helmet
-  await app.register(helmet, { global: true });
-
-  // Enable Cors
-  await app.register(cors, { origin: true });
-
-  // Add Compression
-  await app.register(compression, { threshold: 512 });
 
   // Global Response Interceptor
   app.useGlobalInterceptors(new ApiResponseInterceptor());
@@ -58,7 +40,7 @@ async function bootstrap() {
 
   app.use(
     "/api/reference",
-    apiReference({ withFastify: true, spec: { content: documentFactory } }),
+    apiReference({ spec: { content: documentFactory } }),
   );
 
   // Added for prevent crash server.

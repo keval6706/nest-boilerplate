@@ -1,9 +1,12 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { InjectDataSource } from "@nestjs/typeorm";
-import { DataSource } from "typeorm";
-import { Session } from "../../database/entities/session.entity";
-import { User } from "../../database/entities/user.entity";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import {
+  Session,
+  SessionDocument,
+} from "../../database/schemas/session.schema";
+import { User, UserDocument } from "../../database/schemas/user.schema";
 import { BcryptService } from "../../services/bcrypt.service";
 import { OAuthPayload } from "../../types/jwt";
 import { LoginDto, SignupDto } from "./auth.dto";
@@ -11,42 +14,36 @@ import { LoginDto, SignupDto } from "./auth.dto";
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectDataSource() private readonly dataSource: DataSource,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Session.name) private sessionModel: Model<SessionDocument>,
     private readonly jwtService: JwtService,
     private readonly bcryptService: BcryptService,
   ) {}
 
   async signup(body: SignupDto) {
-    const u = await this.dataSource.getRepository(User).findOneBy({
-      email: body.email,
-    });
+    const existingUser = await this.userModel.findOne({ email: body.email });
 
-    if (u)
+    if (existingUser) {
       throw new BadRequestException(
         "Already signed up. Please login to continue",
       );
+    }
 
-    const user = this.dataSource.getRepository(User).create({
+    const user = new this.userModel({
       ...body,
       password: this.bcryptService.hashSync(body.password),
     });
 
-    return await this.dataSource.getRepository(User).save(user);
+    return await user.save();
   }
 
   async login(loginDto: LoginDto) {
     const { email, password, ipAddress } = loginDto;
 
-    const user = await this.dataSource.getRepository(User).findOne({
-      where: { email },
-      select: {
-        id: true,
-        email: true,
-        password: true,
-        firstName: true,
-        lastName: true,
-      },
-    });
+    const user = await this.userModel
+      .findOne({ email })
+      .select("+password")
+      .exec();
 
     if (!user) {
       throw new BadRequestException("User not found");
@@ -54,25 +51,30 @@ export class AuthService {
 
     this.bcryptService.compareSync(password, user.password);
 
-    const session = await this.dataSource
-      .getRepository(Session)
-      .save({ userId: user.id, ipAddress });
+    const session = await this.sessionModel.create({
+      userId: user._id,
+      ipAddress,
+    });
 
     const payload: OAuthPayload = {
-      id: user.id,
+      id: user._id.toString(),
       email: user.email,
-      sessionId: session.id,
+      sessionId: session._id.toString(),
     };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password: p, ..._user } = user;
+    const { password: p, ...userWithoutPassword } = user.toObject();
 
-    return { ..._user, token: await this.jwtService.signAsync(payload) };
+    return {
+      ...userWithoutPassword,
+      token: await this.jwtService.signAsync(payload),
+    };
   }
 
-  async logout(user: User, session: string) {
-    await this.dataSource
-      .getRepository(Session)
-      .delete({ id: session, userId: user.id });
+  async logout(user: User, sessionId: string) {
+    await this.sessionModel.deleteOne({
+      _id: sessionId,
+      userId: user._id,
+    });
   }
 }

@@ -1,17 +1,24 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
 import { PassportStrategy } from "@nestjs/passport";
-import { InjectDataSource } from "@nestjs/typeorm";
 import { FastifyRequest } from "fastify";
 import { readFileSync } from "fs";
+import { Model } from "mongoose";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { join } from "path";
-import { DataSource } from "typeorm";
-import { Session } from "../../database/entities/session.entity";
+import {
+  Session,
+  SessionDocument,
+} from "../../database/schemas/session.schema";
+import { User, UserDocument } from "../../database/schemas/user.schema";
 import { OAuthPayload } from "../../types/jwt";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(@InjectDataSource() private readonly dataSource: DataSource) {
+  constructor(
+    @InjectModel(Session.name) private sessionModel: Model<SessionDocument>,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -22,15 +29,18 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(request: FastifyRequest, payload: OAuthPayload) {
-    const session = await this.dataSource.getRepository(Session).findOne({
-      where: { id: payload.sessionId },
-      relations: ["user"],
-    });
+    const session = await this.sessionModel
+      .findById(payload.sessionId)
+      .populate("userId")
+      .exec();
+
     if (!session) throw new UnauthorizedException();
 
-    request.session = session.id;
-    if (!session.user) throw new UnauthorizedException();
+    request.session = session._id.toString();
 
-    return session.user;
+    const user = await this.userModel.findById(session.userId);
+    if (!user) throw new UnauthorizedException();
+
+    return user;
   }
 }

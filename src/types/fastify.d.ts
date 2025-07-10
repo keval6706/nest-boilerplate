@@ -1,5 +1,5 @@
 import "fastify";
-import { User } from "../database/entities/user.entity";
+import { User } from "../database/schemas/user.schema";
 
 declare module "fastify" {
   export interface FastifyRequest {
