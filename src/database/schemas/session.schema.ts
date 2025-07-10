@@ -11,7 +11,7 @@ export class Session {
   _id: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: User.name, required: true })
-  userId: Types.ObjectId;
+  user: Types.ObjectId;
 
   @Prop({ type: String, required: false })
   ipAddress: string;

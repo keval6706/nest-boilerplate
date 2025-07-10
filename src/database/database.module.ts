@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { DbConfig } from "../config/db.config";
+import { Post, PostSchema } from "./schemas/post.schema";
 import { Session, SessionSchema } from "./schemas/session.schema";
 import { User, UserSchema } from "./schemas/user.schema";
 
@@ -17,6 +18,7 @@ import { User, UserSchema } from "./schemas/user.schema";
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: Session.name, schema: SessionSchema },
+      { name: Post.name, schema: PostSchema },
     ]),
   ],
 })

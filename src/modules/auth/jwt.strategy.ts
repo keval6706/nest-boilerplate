@@ -38,7 +38,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     request.session = session._id.toString();
 
-    const user = await this.userModel.findById(session.userId);
+    const user = await this.userModel.findById(session.user);
     if (!user) throw new UnauthorizedException();
 
     return user;
