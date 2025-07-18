@@ -46,7 +46,7 @@ async function bootstrap() {
 
   // Swagger
   const config = new DocumentBuilder()
-    .setTitle("Creator Platform")
+    .setTitle("API Documentation")
     .setDescription("API Documentation")
     .setVersion("1.0")
     .addBearerAuth()
@@ -58,7 +58,20 @@ async function bootstrap() {
 
   app.use(
     "/api/reference",
-    apiReference({ withFastify: true, spec: { content: documentFactory } }),
+    apiReference({
+      withFastify: true,
+      spec: { content: documentFactory },
+      metaData: {
+        title: "Api Documentation",
+        description: "Api Documentation",
+      },
+      persistAuth: true,
+      hideClientButton: true,
+      authentication: {
+        preferredSecurityScheme: "bearer",
+      },
+      theme: "laserwave",
+    }),
   );
 
   // Added for prevent crash server.
